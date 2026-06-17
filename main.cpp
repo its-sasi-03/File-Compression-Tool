@@ -2,6 +2,7 @@
 #include <queue>
 #include <unordered_map>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -53,10 +54,29 @@ void generateCodes(Node* root,
 
 int main()
 {
-    string text;
+string filename;
 
-    cout << "Enter text: ";
-    getline(cin, text);
+cout << "Enter input file name: ";
+getline(cin, filename);
+
+ifstream inputFile(filename);
+
+if(!inputFile)
+{
+    cout << "Error opening file!\n";
+    return 0;
+}
+
+string text;
+string line;
+
+while(getline(inputFile, line))
+{
+    text += line;
+    text += '\n';
+}
+
+inputFile.close();
 
     // Handle empty input
     if(text.empty())
@@ -167,6 +187,14 @@ int main()
     cout << "\nEncoded Text:\n";
     cout << encoded << endl;
 
+    ofstream compressedFile("compressed.txt");
+
+compressedFile << encoded;
+
+compressedFile.close();
+
+cout << "\nCompressed data saved to compressed.txt\n";
+
     // Decode
     string decoded = "";
 
@@ -192,8 +220,37 @@ int main()
         }
     }
 
+// Compression Statistics
+int originalBits = text.length() * 8;
+
+int compressedBits = encoded.length();
+
+double compressionRatio =
+    ((double)(originalBits - compressedBits)
+     / originalBits) * 100;
+
+cout << "\nCompression Statistics:\n";
+
+cout << "Original Size: "
+     << originalBits
+     << " bits\n";
+
+cout << "Compressed Size: "
+     << compressedBits
+     << " bits\n";
+
+cout << "Compression Ratio: "
+     << compressionRatio
+     << "%\n";
     cout << "\nDecoded Text:\n";
     cout << decoded << endl;
+    ofstream decodedFile("decoded.txt");
+
+decodedFile << decoded;
+
+decodedFile.close();
+
+cout << "Decoded text saved to decoded.txt\n";
 
     return 0;
 }

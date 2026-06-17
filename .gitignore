@@ -1,0 +1,5 @@
+*.exe
+.vscode/
+compressed.txt
+decoded.txt
+input.txt
